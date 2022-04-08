@@ -5,6 +5,8 @@ namespace RobotVacuumCleaner
 {
     internal class Program
     {
+        static Robot robot = new Robot();
+
         enum Directions
         {
             Right,
@@ -53,61 +55,61 @@ namespace RobotVacuumCleaner
 
             int[] robotPos = FindRobotPos(room);
 
-            MoveRobotToTopLeft(room, robotPos);
+            MoveRobotToTopLeft(room);
 
-            Cleaning(room, robotPos);
+            Cleaning(room);
 
             Console.ReadKey();
         }
 
-        private static void Cleaning(char[,] room, int[] robotPos)
+        private static void Cleaning(char[,] room)
         {
             // start the cleaning
-            while ((robotPos[0] < roomInWallVer && robotPos[1] < roomInWallHor) || (robotPos[0] > 0 && robotPos[1] > 0))
+            while ((robot.Row < roomInWallVer && robot.Column < roomInWallHor) || (robot.Row > 0 && robot.Column > 0))
             {
                 // if the robot goes to right direction
                 if (direction == Directions.Right)
                 {
                     // while the next coordinate (robotPost[1] + 1) is not "X"
-                    while (!room[robotPos[0], robotPos[1] + 1].Equals((char)RoomObject.Obstacle))
+                    while (!room[robot.Row, robot.Column + 1].Equals((char)RoomObject.Obstacle))
                     {
                         // current position -> "1" | next post -> "R"
-                        room[robotPos[0], robotPos[1]] = (char)RoomObject.Clean;
-                        room[robotPos[0], robotPos[1] + 1] = (char)RoomObject.Robot;
-                        robotPos[1]++;
+                        room[robot.Row, robot.Column] = (char)RoomObject.Clean;
+                        room[robot.Row, robot.Column + 1] = (char)RoomObject.Robot;
+                        robot.Column++;
                         Console.WriteLine("--- move right ---");
                         DrawRoom(room);
                     }
 
-                    MoveRobotDown(robotPos);
+                    MoveRobotDown();
                 }
                 // if the robot goes to left direction
                 else if (direction == Directions.Left)
                 {
                     // while the next coordinate (robotPost[1] - 1) is not "X"
-                    while (!room[robotPos[0], robotPos[1] - 1].Equals((char)RoomObject.Obstacle))
+                    while (!room[robot.Row, robot.Column - 1].Equals((char)RoomObject.Obstacle))
                     {
                         // current position -> "1" | next post -> "R"
-                        room[robotPos[0], robotPos[1]] = (char)RoomObject.Clean;
-                        room[robotPos[0], robotPos[1] - 1] = (char)RoomObject.Robot;
-                        robotPos[1]--;
+                        room[robot.Row, robot.Column] = (char)RoomObject.Clean;
+                        room[robot.Row, robot.Column - 1] = (char)RoomObject.Robot;
+                        robot.Column--;
                         Console.WriteLine("--- move left ---");
                         DrawRoom(room);
                     }
 
-                    MoveRobotDown(robotPos);
+                    MoveRobotDown();
                 }
             }
         }
 
-        private static void MoveRobotDown(int[] robotPos)
+        private static void MoveRobotDown()
         {
             // if room[robotPost[0] + 1, robotPost[1] != "X" | robotPost[0] -> + 1 | direction -> left
-            if (!room[robotPos[0] + 1, robotPos[1]].Equals((char)RoomObject.Obstacle))
+            if (!room[robot.Row + 1, robot.Column].Equals((char)RoomObject.Obstacle))
             {
-                room[robotPos[0], robotPos[1]] = (char)RoomObject.Clean;
-                room[robotPos[0] + 1, robotPos[1]] = (char)RoomObject.Robot;
-                robotPos[0]++;
+                room[robot.Row, robot.Column] = (char)RoomObject.Clean;
+                room[robot.Row + 1, robot.Column] = (char)RoomObject.Robot;
+                robot.Row++;
 
                 if (direction == Directions.Left)
                 {
@@ -122,26 +124,26 @@ namespace RobotVacuumCleaner
             }
         }
 
-        private static void MoveRobotToTopLeft(char[,] room, int[] robotPos)
+        private static void MoveRobotToTopLeft(char[,] room)
         {
             // move the robot to the left wall
-            while (!((room[robotPos[0], robotPos[1] - 1]).Equals((char)RoomObject.Obstacle)))
+            while (!((room[robot.Row, robot.Column - 1]).Equals((char)RoomObject.Obstacle)))
             {
                 // current position -> "1" | next post -> "R"
-                room[robotPos[0], robotPos[1]] = (char)RoomObject.Clean;
-                room[robotPos[0], robotPos[1] - 1] = (char)RoomObject.Robot;
-                robotPos[1]--;
+                room[robot.Row, robot.Column] = (char)RoomObject.Clean;
+                room[robot.Row, robot.Column - 1] = (char)RoomObject.Robot;
+                robot.Column--;
                 Console.WriteLine("--- move left ---");
                 DrawRoom(room);
             }
 
             // move the robot to the top wall
-            while (!((room[robotPos[0] - 1, robotPos[1]]).Equals((char)RoomObject.Obstacle)))
+            while (!((room[robot.Row - 1, robot.Column]).Equals((char)RoomObject.Obstacle)))
             {
                 // current position -> "1" | next post -> "R"
-                room[robotPos[0], robotPos[1]] = (char)RoomObject.Clean;
-                room[robotPos[0] - 1, robotPos[1]] = (char)RoomObject.Robot;
-                robotPos[0]--;
+                room[robot.Row, robot.Column] = (char)RoomObject.Clean;
+                room[robot.Row - 1, robot.Column] = (char)RoomObject.Robot;
+                robot.Row--;
                 Console.WriteLine("--- move up ---");
                 DrawRoom(room);
             }
@@ -171,12 +173,12 @@ namespace RobotVacuumCleaner
                 {
                     if (room[row, column] == (char)RoomObject.Robot)
                     {
-                        robotPos[0] = row;
-                        robotPos[1] = column;
+                        robot.Row = row;
+                        robot.Column = column;
                     }
                 }
             }
-            Console.WriteLine($"Robot position: [{robotPos[0]}, {robotPos[1]}]");
+            Console.WriteLine($"Robot position: [{robot.Row}, {robot.Column}]");
             return robotPos;
         }
     }
