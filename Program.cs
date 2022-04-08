@@ -78,16 +78,8 @@ namespace RobotVacuumCleaner
                         Console.WriteLine("--- move right ---");
                         DrawRoom(room);
                     }
-                    // if room[robotPost[0] + 1, robotPost[1] != "X" | robotPost[0] -> + 1 | direction -> left
-                    if (!room[robotPos[0] + 1, robotPos[1]].Equals((char)RoomObject.Obstacle))
-                    {
-                        room[robotPos[0], robotPos[1]] = (char)RoomObject.Clean;
-                        room[robotPos[0] + 1, robotPos[1]] = (char)RoomObject.Robot;
-                        robotPos[0]++;
-                        direction = Directions.Left;
-                        Console.WriteLine("--- move down ---");
-                        DrawRoom(room);
-                    }
+
+                    MoveRobotDown(robotPos);
                 }
                 // if the robot goes to left direction
                 else if (direction == Directions.Left)
@@ -102,17 +94,31 @@ namespace RobotVacuumCleaner
                         Console.WriteLine("--- move left ---");
                         DrawRoom(room);
                     }
-                    // if room[robotPost[0] + 1, robotPost[1] != "X" | robotPost[0] -> + 1 | direction -> left
-                    if (!room[robotPos[0] + 1, robotPos[1]].Equals((char)RoomObject.Obstacle))
-                    {
-                        room[robotPos[0], robotPos[1]] = (char)RoomObject.Clean;
-                        room[robotPos[0] + 1, robotPos[1]] = (char)RoomObject.Robot;
-                        robotPos[0]++;
-                        direction = Directions.Right;
-                        Console.WriteLine("--- move down ---");
-                        DrawRoom(room);
-                    }
+
+                    MoveRobotDown(robotPos);
                 }
+            }
+        }
+
+        private static void MoveRobotDown(int[] robotPos)
+        {
+            // if room[robotPost[0] + 1, robotPost[1] != "X" | robotPost[0] -> + 1 | direction -> left
+            if (!room[robotPos[0] + 1, robotPos[1]].Equals((char)RoomObject.Obstacle))
+            {
+                room[robotPos[0], robotPos[1]] = (char)RoomObject.Clean;
+                room[robotPos[0] + 1, robotPos[1]] = (char)RoomObject.Robot;
+                robotPos[0]++;
+
+                if (direction == Directions.Left)
+                {
+                    direction = Directions.Right;
+                }
+                else
+                {
+                    direction = Directions.Left;
+                }
+                Console.WriteLine("--- move down ---");
+                DrawRoom(room);
             }
         }
 
